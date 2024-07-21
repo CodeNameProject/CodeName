@@ -7,16 +7,16 @@ namespace DLL.Repository;
 
 public class WordRepository : IWordRepository
 {
-    private readonly AppDbContext _context;
+	private DbSet<Word> Words { get; set; }
 
-    public WordRepository(AppDbContext context)
+	public WordRepository(AppDbContext context)
     {
-        _context = context;
+		Words = context.Set<Word>();
     }
     
     public async Task<IEnumerable<Word>> GetAllAsync()
     {
-        var words = await _context.Words
+        var words = await Words
             .Include(w => w.WordRooms)
             .ToListAsync();
         return words;
@@ -24,7 +24,7 @@ public class WordRepository : IWordRepository
 
     public async Task<Word> GetByIdAsync(Guid id)
     {
-        var words = await _context.Words
+        var words = await Words
             .Include(w => w.WordRooms)
             .FirstOrDefaultAsync(x => x.Id == id);
         return words!;
@@ -32,20 +32,17 @@ public class WordRepository : IWordRepository
 
     public async Task AddAsync(Word entity)
     {
-        await _context.Words.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await Words.AddAsync(entity);
     }
 
     public async Task DeleteByIdAsync(Guid id)
     {
         var word = await GetByIdAsync(id);
-        _context.Words.Remove(word);
-        await _context.SaveChangesAsync();
+        Words.Remove(word);
     }
 
     public void Update(Word entity)
     {
-        _context.Words.Update(entity);
-        _context.SaveChanges();
+        Words.Update(entity);
     }
 }

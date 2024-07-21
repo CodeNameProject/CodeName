@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BLL.Helper;
 using BLL.Interface;
 using BLL.Models;
 using DLL.Entities;
@@ -21,33 +22,44 @@ public class WordService : IWordService
     {
         var words = await _unitOfWork.WordRepository.GetAllAsync();
         var wordsMapped = _mapper.Map<IEnumerable<WordModel>>(words);
+
         return wordsMapped;
     }
 
     public async Task<WordModel> GetByIdAsync(Guid id)
     {
+        CheckHelper.ModelCheck(id, _unitOfWork.WordRepository);
+
         var word = await _unitOfWork.WordRepository.GetByIdAsync(id);
         var wordMapped = _mapper.Map<WordModel>(word);
+
         return wordMapped;
     }
 
     public async Task AddAsync(WordModel model)
     {
-        var word = _mapper.Map<Word>(model);
+		CheckHelper.NullCheck(model);
+
+		var word = _mapper.Map<Word>(model);
         await _unitOfWork.WordRepository.AddAsync(word);
         await _unitOfWork.SaveAsync();
     }
 
     public async Task UpdateAsync(WordModel model)
     {
-        var word = _mapper.Map<Word>(model);
+		CheckHelper.NullCheck(model);
+		CheckHelper.ModelCheck(model.Id, _unitOfWork.WordRepository);
+
+		var word = _mapper.Map<Word>(model);
         _unitOfWork.WordRepository.Update(word);
         await _unitOfWork.SaveAsync();
     }
 
     public async Task DeleteAsync(Guid modelId)
     {
-        await _unitOfWork.WordRepository.DeleteByIdAsync(modelId);
+		CheckHelper.ModelCheck(modelId, _unitOfWork.WordRepository);
+
+		await _unitOfWork.WordRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();
     }
 }

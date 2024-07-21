@@ -7,45 +7,45 @@ namespace DLL.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
 
-    public UserRepository(AppDbContext context)
+	private DbSet<User> Users { get; set; }
+
+	public UserRepository(AppDbContext context)
     {
-        _context = context;
+        Users = context.Set<User>();
     }
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        var users = await _context.Users
+        var users = await Users
             .Include(r => r.Room)
             .ToListAsync();
+
         return users;
     }
 
     public async Task<User> GetByIdAsync(Guid id)
     {
-        var user = await _context.Users
+        var user = await Users
             .Include(r => r.Room)
             .FirstOrDefaultAsync(u => u.Id == id);
+
         return user!;
     }
 
     public async Task AddAsync(User entity)
     {
-        await _context.Users.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await Users.AddAsync(entity);
     }
 
     public async Task DeleteByIdAsync(Guid id)
     {
         var user = await GetByIdAsync(id);
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        Users.Remove(user);
     }
 
     public void Update(User entity)
     {
-        _context.Users.Update(entity);
-        _context.SaveChanges();
+        Users.Update(entity);
     }
 }

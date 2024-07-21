@@ -2,9 +2,10 @@
 
 public interface IUnitOfWork
 {
-    public IRoomRepository RoomRepository { get; set; }
-    public IUserRepository UserRepository { get; set; }
-    public IWordRepository WordRepository { get; set; }
+    public IRoomRepository RoomRepository { get; }
+    public IUserRepository UserRepository { get; }
+    public IWordRepository WordRepository { get; }
+	public IWordRoomRepository WordRoomRepository { get; }
 
-    Task SaveAsync();   
+	Task SaveAsync();   
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BLL.Helper;
 using BLL.Interface;
 using BLL.Models;
 using BLL.Validation;
@@ -18,23 +19,28 @@ public class RoomService : IRoomService
         _mapper = mapper;
     }
 
-
     public async Task<IEnumerable<RoomModel>> GetAllAsync()
     {
         var rooms = await _unitOfWork.RoomRepository.GetAllAsync();
         var roomsMapped = _mapper.Map<IEnumerable<RoomModel>>(rooms);
+
         return roomsMapped;
     }
 
     public async Task<RoomModel> GetByIdAsync(Guid id)
-    {
-        var room = await _unitOfWork.RoomRepository.GetByIdAsync(id);
-        var roomMapped = _mapper.Map<RoomModel>(room);
-        return roomMapped;
-    }
+	{
+        CheckHelper.ModelCheck(id, _unitOfWork.RoomRepository);
 
-    public async Task AddAsync(RoomModel model)
+		var room = await _unitOfWork.RoomRepository.GetByIdAsync(id);
+		var roomMapped = _mapper.Map<RoomModel>(room);
+
+		return roomMapped;
+	}
+
+	public async Task AddAsync(RoomModel model)
     {
+		CheckHelper.NullCheck(model);
+
         var room = _mapper.Map<Room>(model);
         await _unitOfWork.RoomRepository.AddAsync(room);
         await _unitOfWork.SaveAsync();
@@ -42,13 +48,19 @@ public class RoomService : IRoomService
 
     public async Task UpdateAsync(RoomModel model)
     {
+        CheckHelper.NullCheck(model);
+
+		CheckHelper.ModelCheck(model.Id, _unitOfWork.RoomRepository);
+
         var room = _mapper.Map<Room>(model);
         _unitOfWork.RoomRepository.Update(room);
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task DeleteAsync(Guid modelId)
+	public async Task DeleteAsync(Guid modelId)
     {
+        CheckHelper.ModelCheck(modelId, _unitOfWork.RoomRepository);
+
         await _unitOfWork.RoomRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();
     }

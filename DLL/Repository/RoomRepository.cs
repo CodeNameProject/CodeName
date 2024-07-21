@@ -7,47 +7,46 @@ namespace DLL.Repository;
 
 public class RoomRepository : IRoomRepository
 {
-    private readonly AppDbContext _context;
+	private DbSet<Room> Rooms { get; set; }
 
-    public RoomRepository(AppDbContext context)
-    {
-        _context = context;
-    }
-    
-    public async Task<IEnumerable<Room>> GetAllAsync()
-    {
-        var rooms = await _context.Rooms
-            .Include(x => x.WordRooms)
-            .Include(c => c.Users)
-            .ToListAsync();
-        return rooms;
-    }
+	public RoomRepository(AppDbContext context)
+	{
+		Rooms = context.Set<Room>();
+	}
 
-    public async Task<Room> GetByIdAsync(Guid id)
-    {
-        var room = await _context.Rooms
-            .Include(x => x.WordRooms)
-            .Include(c => c.Users)
-            .FirstOrDefaultAsync(c => c.Id == id);
-        return room!;
-    }
+	public async Task<IEnumerable<Room>> GetAllAsync()
+	{
+		var rooms = await Rooms
+			.Include(x => x.WordRooms)
+			.Include(c => c.Users)
+			.ToListAsync();
+		
+		return rooms;
+	}
 
-    public async Task AddAsync(Room entity)
-    {
-        await _context.Rooms.AddAsync(entity);
-        await _context.SaveChangesAsync();
-    }
+	public async Task<Room> GetByIdAsync(Guid id)
+	{
+		var room = await Rooms
+			.Include(x => x.WordRooms)
+			.Include(c => c.Users)
+			.FirstOrDefaultAsync(c => c.Id == id);
 
-    public async Task DeleteByIdAsync(Guid id)
-    {
-        var room = await GetByIdAsync(id);
-        _context.Rooms.Remove(room);
-        await _context.SaveChangesAsync();
-    }
+		return room!;
+	}
 
-    public void Update(Room entity)
-    {
-        _context.Rooms.Update(entity);
-        _context.SaveChangesAsync();
-    }
+	public async Task AddAsync(Room entity)
+	{
+		await Rooms.AddAsync(entity);
+	}
+
+	public async Task DeleteByIdAsync(Guid id)
+	{
+		var room = await GetByIdAsync(id);
+		Rooms.Remove(room);
+	}
+
+	public void Update(Room entity)
+	{
+		Rooms.Update(entity);
+	}
 }

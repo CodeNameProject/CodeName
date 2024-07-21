@@ -6,19 +6,30 @@ namespace DLL.Data;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
+	private readonly IWordRoomRepository _wordRoomRepository;
+	private readonly IRoomRepository _roomRepository;
+	private readonly IUserRepository _userRepository;
+	private readonly IWordRepository _wordRepository;
 
-    public UnitOfWork(AppDbContext context)
+	public UnitOfWork(IWordRoomRepository wordRoomRepository,
+                        IRoomRepository roomRepository,
+                        IUserRepository userRepository,
+						IWordRepository wordRepository,
+						AppDbContext context)
     {
-        _context = context;
-        RoomRepository = new RoomRepository(_context);
-        UserRepository = new UserRepository(_context);
-        WordRepository = new WordRepository(_context);
-    }
-    public IRoomRepository RoomRepository { get; set; }
-    public IUserRepository UserRepository { get; set; }
-    public IWordRepository WordRepository { get; set; }
+		_wordRoomRepository = wordRoomRepository;
+		_roomRepository = roomRepository;
+		_userRepository = userRepository;
+		_wordRepository = wordRepository;
+		_context = context;
+	}
 
-    public async Task SaveAsync()
+	public IRoomRepository RoomRepository => _roomRepository;
+	public IUserRepository UserRepository => _userRepository;
+	public IWordRepository WordRepository => _wordRepository;
+	public IWordRoomRepository WordRoomRepository => _wordRoomRepository;
+
+	public async Task SaveAsync()
     {
         await _context.SaveChangesAsync();
     }
