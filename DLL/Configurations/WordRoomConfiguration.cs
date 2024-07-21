@@ -13,12 +13,13 @@ namespace DLL.Configurations
 			builder.HasOne(wr => wr.Room)
 				.WithMany(r => r.WordRooms)
 				.HasForeignKey(r => r.RoomId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Cascade)
+				.IsRequired();
 
 			builder.HasOne(wr => wr.Word)
 				.WithMany(w => w.WordRooms)
 				.HasForeignKey(r => r.WordId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.IsRequired();
 		}
 	}
 }
