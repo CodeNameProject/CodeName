@@ -10,5 +10,5 @@ public class Word
     [Required] 
     public string WordName { get; set; } = null!;
 
-    public ICollection<WordRoom> WordRooms { get; set; }
+    public ICollection<WordRoom>? WordRooms { get; set; }
 }
