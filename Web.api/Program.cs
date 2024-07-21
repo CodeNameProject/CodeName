@@ -30,9 +30,9 @@ namespace CodeNamesAPI
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IRoomService, RoomService>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IWordRoomRepository, WordRoomRepository>();
-            builder.Services.AddScoped<IWordRepository, WordRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWordRoomService, WordRoomService>();
+            builder.Services.AddScoped<IWordService, WordService>();
 
             builder.Services.AddAutoMapper(x => x.AddProfile(new AutomapperProfile()));
             
