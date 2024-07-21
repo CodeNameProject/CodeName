@@ -1,3 +1,4 @@
+using BLL;
 using DLL.Data;
 using DLL.Interface;
 using DLL.Repository;
@@ -16,6 +17,7 @@ namespace CodeNamesAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            
             builder.Services.AddDbContext<AppDbContext>(s =>
                 s.UseSqlServer(builder.Configuration.GetConnectionString("ConString")));
 
@@ -24,6 +26,8 @@ namespace CodeNamesAPI
             builder.Services.AddScoped<IWordRepository, WordRepository>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddAutoMapper(x => x.AddProfile(new AutomapperProfile()));
             
             var app = builder.Build();
 
