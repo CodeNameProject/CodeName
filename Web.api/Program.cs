@@ -1,4 +1,6 @@
 using DLL.Data;
+using DLL.Interface;
+using DLL.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodeNamesAPI
@@ -17,6 +19,12 @@ namespace CodeNamesAPI
             builder.Services.AddDbContext<AppDbContext>(s =>
                 s.UseSqlServer(builder.Configuration.GetConnectionString("ConString")));
 
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IWordRepository, WordRepository>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())

@@ -3,11 +3,10 @@ using DLL.Enums;
 
 namespace DLL.Entities;
 
-public class Word
+public class Word : BaseEntity
 {
-    public Guid Id { get; set; }
-
     [Required] 
+    [MaxLength(20)]
     public string WordName { get; set; } = null!;
 
     public ICollection<WordRoom>? WordRooms { get; set; }
