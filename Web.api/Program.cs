@@ -1,4 +1,9 @@
+using BLL;
+using BLL.Interface;
+using BLL.Services;
 using DLL.Data;
+using DLL.Interface;
+using DLL.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodeNamesAPI
@@ -13,10 +18,24 @@ namespace CodeNamesAPI
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            
             builder.Services.AddDbContext<AppDbContext>(s =>
                 s.UseSqlServer(builder.Configuration.GetConnectionString("ConString")));
 
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IWordRepository, WordRepository>();
+            builder.Services.AddScoped<IWordRoomRepository, WordRoomRepository>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<IRoomService, RoomService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWordRoomService, WordRoomService>();
+            builder.Services.AddScoped<IWordService, WordService>();
+
+            builder.Services.AddAutoMapper(x => x.AddProfile(new AutomapperProfile()));
+            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())

@@ -1,6 +1,7 @@
 ﻿using DLL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace DLL.Configurations
 {
@@ -9,6 +10,9 @@ namespace DLL.Configurations
 		public void Configure(EntityTypeBuilder<WordRoom> builder)
 		{
 			builder.HasKey(wr => new {wr.WordId, wr.RoomId});
+
+			builder.Property(x => x.Id)
+					.ValueGeneratedOnAdd();
 
 			builder.HasOne(wr => wr.Room)
 				.WithMany(r => r.WordRooms)

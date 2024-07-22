@@ -3,13 +3,13 @@ using DLL.Enums;
 
 namespace DLL.Entities;
 
-public class User
+public class User : BaseEntity
 {
-    public Guid Id { get; set; }
     [Required] 
+    [MaxLength(20)]
     public string Name { get; set; } = null!;
-    public  UserRole UserRole { get; set; }
-    public TeamColor Team { get; set; }
+    public UserRole? UserRole { get; set; }
+    public TeamColor? Team { get; set; }
 
     [Required]
     public Guid RoomId { get; set; }
