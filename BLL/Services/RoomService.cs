@@ -4,6 +4,7 @@ using BLL.Interface;
 using BLL.Models;
 using BLL.Validation;
 using DLL.Entities;
+using DLL.Enums;
 using DLL.Interface;
 
 namespace BLL.Services;
@@ -12,7 +13,9 @@ public class RoomService : IRoomService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private const int WordCount = 25;
+	private const int RedCount = 9;
+	private const int BlueCount = 8;
+	private const int WordCount = 25;
 
     public RoomService(IUnitOfWork unitOfWork, IMapper mapper)
     {
@@ -27,68 +30,23 @@ public class RoomService : IRoomService
     {
         var room = new Room();
 
+        await _unitOfWork.RoomRepository.AddAsync(room);
+
         var user = new User
         {
             Name = username,
             RoomId = room.Id,
-            Room = room
         };
 
-        // await _unitOfWork.RoomRepository.AddAsync(room);
-
         await _unitOfWork.UserRepository.AddAsync(user);
+
+        await AddWordsToRoomAsync(room.Id);
 
         room = await _unitOfWork.RoomRepository.GetByIdAsync(room.Id);
 
         var roomModel = _mapper.Map<RoomModel>(room);
 
         return roomModel;
-    }
-
-    private async Task<IEnumerable<WordRoomModel>> GetWordRoomModels(Guid roomId)
-    {
-        var words = await GetRandomWordsAsync();
-
-        var wordRooms = new List<WordRoomModel>();
-
-        var rand = new Random();
-        
-        //9 Red , 8 Blue , 1 Bomb , 7 Default
-
-        foreach (var word in words)
-        {
-            var wordRoom = new WordRoomModel
-            {
-                // Color = ,
-                IsGuessed = false,
-                RoomId = roomId,
-                WordId = word.Id,
-                WordName = word.WordName,
-            };
-
-            wordRooms.Add(wordRoom);
-        }
-
-        return wordRooms;
-    }
-
-    //Random 25 words
-    private async Task<IEnumerable<Word>> GetRandomWordsAsync()
-    {
-        var words = (await _unitOfWork.WordRepository.GetAllAsync()).ToList();
-
-        var wordRange = new Dictionary<int, Word>();
-
-        while (wordRange.Count < WordCount)
-        {
-            var rand = new Random();
-            var randomId = rand.Next(words.Count);
-            wordRange[randomId] = words[randomId];
-        }
-
-        words = wordRange.Values.ToList();
-
-        return words;
     }
 
     //Returns RoomID
@@ -114,10 +72,8 @@ public class RoomService : IRoomService
     public async Task StartGameAsync(UserModel user)
     {
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(user.RoomId);
-
-        // room.Users.Count() >= 4
         
-        if (!room.IsStarted)
+        if (!room.IsStarted && room.Users!.Count >= 4)
         {
             room.IsStarted = true;
         }
@@ -141,12 +97,14 @@ public class RoomService : IRoomService
         {
             await _unitOfWork.WordRoomRepository.DeleteByIdAsync(wr.Id);
         }
-        
-        
-        //Add new Words
-        
-        _unitOfWork.RoomRepository.Update(room);
-        return new RoomModel();
+
+		_unitOfWork.RoomRepository.Update(room);
+
+        await AddWordsToRoomAsync(user.RoomId);
+
+        var roomModel = await GetByIdAsync(user.RoomId);
+
+        return roomModel;
     }
 
     //---------------------////////////
@@ -195,4 +153,124 @@ public class RoomService : IRoomService
         await _unitOfWork.RoomRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();
     }
+	
+    private async Task AddWordsToRoomAsync(Guid roomId)
+	{
+		var words = await GetRandomWordsAsync();
+
+		await AddBombAsync(words, roomId);
+
+		await AddBluesAsync(words, roomId);
+
+		await AddRedsAsync(words, roomId);
+
+		await AddNeutralsAsync(words, roomId);
+	}
+
+	private async Task AddNeutralsAsync(List<Word> words, Guid roomId)
+	{
+		foreach (var word in words)
+		{
+			var wordRoom = new WordRoom
+			{
+				IsUncovered = false,
+				Color = WordColor.Default,
+				RoomId = roomId,
+				WordId = word.Id
+			};
+
+			await _unitOfWork.WordRoomRepository.AddAsync(wordRoom);
+			await _unitOfWork.SaveAsync();
+
+			var wrModel = _mapper.Map<WordRoomModel>(wordRoom);
+		}
+	}
+
+	private async Task AddRedsAsync(List<Word> words, Guid roomId)
+	{
+		var rand = new Random();
+
+		for (var i = 0; i < RedCount; i++)
+		{
+			var randomIndex = rand.Next(words.Count);
+
+			var wordRoom = new WordRoom
+			{
+				RoomId = roomId,
+				WordId = words[randomIndex].Id,
+				Color = WordColor.Red,
+				IsUncovered = false,
+			};
+
+			words.RemoveAt(randomIndex);
+
+			await _unitOfWork.WordRoomRepository.AddAsync(wordRoom);
+
+			await _unitOfWork.SaveAsync();
+		}
+	}
+
+	private async Task AddBluesAsync(List<Word> words, Guid roomId)
+	{
+		var rand = new Random();
+
+		for (var i = 0; i < BlueCount; i++)
+		{
+			var randomIndex = rand.Next(words.Count);
+
+			var wordRoom = new WordRoom
+			{
+				RoomId = roomId,
+				WordId = words[randomIndex].Id,
+				Color = WordColor.Blue,
+				IsUncovered = false,
+			};
+
+			words.RemoveAt(randomIndex);
+
+			await _unitOfWork.WordRoomRepository.AddAsync(wordRoom);
+
+			await _unitOfWork.SaveAsync();
+		}
+	}
+
+	private async Task AddBombAsync(List<Word> words, Guid roomId)
+	{
+		var rand = new Random();
+
+		var randomId = rand.Next(words.Count);
+
+		var wordRoom = new WordRoom
+		{
+			RoomId = roomId,
+			WordId = words[randomId].Id,
+			Color = WordColor.Black,
+			IsUncovered = false,
+		};
+
+		words.RemoveAt(randomId);
+
+		await _unitOfWork.WordRoomRepository.AddAsync(wordRoom);
+
+		await _unitOfWork.SaveAsync();
+	}
+
+	//Random 25 words
+	private async Task<List<Word>> GetRandomWordsAsync()
+	{
+		var words = (await _unitOfWork.WordRepository.GetAllAsync()).ToList();
+
+		var wordRange = new Dictionary<int, Word>();
+
+		while (wordRange.Count < WordCount)
+		{
+			var rand = new Random();
+			var randomId = rand.Next(words.Count);
+			wordRange[randomId] = words[randomId];
+		}
+
+		words = wordRange.Values.ToList();
+
+		return words;
+	}
 }
