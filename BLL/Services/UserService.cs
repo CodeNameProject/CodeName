@@ -26,7 +26,7 @@ public class UserService : IUserService
 
     public async Task<UserModel> GetByIdAsync(Guid id)
     {
-        CheckHelper.ModelCheck(id, _unitOfWork.UserRepository);
+        await CheckHelper.ModelCheck(id, _unitOfWork.UserRepository);
 
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
         var userMapped = _mapper.Map<UserModel>(user);
@@ -46,7 +46,7 @@ public class UserService : IUserService
     public async Task UpdateAsync(UserModel model)
     {
         CheckHelper.NullCheck(model);
-        CheckHelper.ModelCheck(model.Id, _unitOfWork.UserRepository);
+        await CheckHelper.ModelCheck(model.Id, _unitOfWork.UserRepository);
 
         var user = _mapper.Map<User>(model);
         _unitOfWork.UserRepository.Update(user);
@@ -55,7 +55,7 @@ public class UserService : IUserService
 
     public async Task DeleteAsync(Guid modelId)
     {
-        CheckHelper.ModelCheck(modelId, _unitOfWork.UserRepository);
+        await CheckHelper.ModelCheck(modelId, _unitOfWork.UserRepository);
 
         await _unitOfWork.UserRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();

@@ -4,68 +4,62 @@ using BLL.Interface;
 using BLL.Models;
 using DLL.Entities;
 using DLL.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BLL.Services
+namespace BLL.Services;
+
+public class WordRoomService : IWordRoomService
 {
-	public class WordRoomService : IWordRoomService
-	{
-		private readonly IUnitOfWork _unitOfWork;
-		private readonly IMapper _mapper;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-		public WordRoomService(IUnitOfWork unitOfWork, IMapper mapper)
-		{
-			_unitOfWork = unitOfWork;
-			_mapper = mapper;
-		}
+    public WordRoomService(IUnitOfWork unitOfWork, IMapper mapper)
+    {
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+    }
 
-		public async Task AddAsync(WordRoomModel model)
-		{
-			CheckHelper.NullCheck(model);
+    public async Task AddAsync(WordRoomModel model)
+    {
+        CheckHelper.NullCheck(model);
 
-			var word = _mapper.Map<WordRoom>(model);
-			await _unitOfWork.WordRoomRepository.AddAsync(word);
-			await _unitOfWork.SaveAsync();
-		}
+        var word = _mapper.Map<WordRoom>(model);
+        await _unitOfWork.WordRoomRepository.AddAsync(word);
+        await _unitOfWork.SaveAsync();
+    }
 
-		public async Task DeleteAsync(Guid modelId)
-		{
-			CheckHelper.ModelCheck(modelId, _unitOfWork.WordRoomRepository);
+    public async Task DeleteAsync(Guid modelId)
+    {
+        await CheckHelper.ModelCheck(modelId, _unitOfWork.WordRoomRepository);
 
-			await _unitOfWork.WordRoomRepository.DeleteByIdAsync(modelId);
-			await _unitOfWork.SaveAsync();
-		}
+        await _unitOfWork.WordRoomRepository.DeleteByIdAsync(modelId);
+        await _unitOfWork.SaveAsync();
+    }
 
-		public async Task<IEnumerable<WordRoomModel>> GetAllAsync()
-		{
-			var words = await _unitOfWork.WordRoomRepository.GetAllAsync();
-			var wordsMapped = _mapper.Map<IEnumerable<WordRoomModel>>(words);
+    public async Task<IEnumerable<WordRoomModel>> GetAllAsync()
+    {
+        var words = await _unitOfWork.WordRoomRepository.GetAllAsync();
+        var wordsMapped = _mapper.Map<IEnumerable<WordRoomModel>>(words);
 
-			return wordsMapped;
-		}
+        return wordsMapped;
+    }
 
-		public async Task<WordRoomModel> GetByIdAsync(Guid id)
-		{
-			CheckHelper.ModelCheck(id, _unitOfWork.WordRoomRepository);
+    public async Task<WordRoomModel> GetByIdAsync(Guid id)
+    {
+        await CheckHelper.ModelCheck(id, _unitOfWork.WordRoomRepository);
 
-			var word = await _unitOfWork.WordRoomRepository.GetByIdAsync(id);
-			var wordMapped = _mapper.Map<WordRoomModel>(word);
+        var word = await _unitOfWork.WordRoomRepository.GetByIdAsync(id);
+        var wordMapped = _mapper.Map<WordRoomModel>(word);
 
-			return wordMapped;
-		}
+        return wordMapped;
+    }
 
-		public async Task UpdateAsync(WordRoomModel model)
-		{
-			CheckHelper.NullCheck(model);
-			CheckHelper.ModelCheck(model.Id, _unitOfWork.WordRoomRepository);
+    public async Task UpdateAsync(WordRoomModel model)
+    {
+        CheckHelper.NullCheck(model);
+        await CheckHelper.ModelCheck(model.Id, _unitOfWork.WordRoomRepository);
 
-			var word = _mapper.Map<WordRoom>(model);
-			_unitOfWork.WordRoomRepository.Update(word);
-			await _unitOfWork.SaveAsync();
-		}
-	}
+        var word = _mapper.Map<WordRoom>(model);
+        _unitOfWork.WordRoomRepository.Update(word);
+        await _unitOfWork.SaveAsync();
+    }
 }

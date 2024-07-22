@@ -1,58 +1,51 @@
-﻿using BLL.Models;
-using BLL.Validation;
-using DLL.Data;
+﻿using BLL.Validation;
 using DLL.Entities;
 using DLL.Interface;
-using DLL.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BLL.Helper
 {
 	public static class CheckHelper
 	{
-		private const string _modelMessage = "model is null";
-		private const string _entityMessage = "entity does not exist";
+		private const string ModelMessage = "model is null";
+		private const string EntityMessage = "entity does not exist";
 
-		public static void ModelCheck<T>(Guid id, IRepository<T> repository)  where T: BaseEntity 
+		public static async Task ModelCheck<T>(Guid id, IRepository<T> repository)  where T: BaseEntity 
 		{
 			switch (repository)
 			{
 				case IWordRoomRepository wordRoomRepository:
 					{
-						var entity = wordRoomRepository.GetByIdAsync(id);
-						NullCheck(entity, _entityMessage);
+						var entity = await wordRoomRepository.GetByIdAsync(id);
+						NullCheck(entity, EntityMessage);
 
 						break;
 					}
 				case IWordRepository wordRepository:
 					{
-						var entity = wordRepository.GetByIdAsync(id);
-						NullCheck(entity, _entityMessage);
+						var entity = await wordRepository.GetByIdAsync(id);
+						NullCheck(entity, EntityMessage);
 
 						break;
 					}
 				case IRoomRepository roomRepository:
 					{
-						var entity = roomRepository.GetByIdAsync(id);
-						NullCheck(entity, _entityMessage);
+						var entity = await roomRepository.GetByIdAsync(id);
+						NullCheck(entity, EntityMessage);
 
 						break;
 					}
 				case IUserRepository userRepository:
 					{
-						var entity = userRepository.GetByIdAsync(id);
-						NullCheck(entity, _entityMessage);
+						var entity = await userRepository.GetByIdAsync(id);
+						NullCheck(entity, EntityMessage);
 
 						break;
 					}
 			}
 		}
 
-		public static void NullCheck(object model, string action = _modelMessage)
+		public static void NullCheck(object model, string action = ModelMessage)
 		{
 			if (model is null)
 			{
