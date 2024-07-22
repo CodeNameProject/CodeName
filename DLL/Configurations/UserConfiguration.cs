@@ -16,6 +16,7 @@ namespace DLL.Configurations
 			builder.HasOne(u => u.Room)
 					.WithMany(r => r.Users)
 					.HasForeignKey(u => u.RoomId)
+					.OnDelete(DeleteBehavior.Cascade)
 					.IsRequired();
 		}
 	}
