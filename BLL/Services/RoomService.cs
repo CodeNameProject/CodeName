@@ -19,7 +19,24 @@ public class RoomService : IRoomService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    public async Task CheckUserWord(UserModel user, Guid wordId)
+    {
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(user.RoomId);
 
+        if (room.WordRooms is null) throw new CustomException();
+        
+        var userWords = (room.WordRooms.Where(x => (int)x.Color! == (int)user.TeamColor!)).Select(x => x.WordId);
+
+        var chosenWord = await _unitOfWork.WordRepository.GetByIdAsync(wordId);
+
+        if (userWords.Contains(chosenWord.Id))
+        {
+            var roomWord = room.WordRooms.FirstOrDefault(x => x.WordId == wordId);
+
+            if (roomWord != null) roomWord.IsUncovered = true;
+        }
+    }
+    
     //GetRoom With Id
     
     //AddUser With Name And should back Room
@@ -128,6 +145,8 @@ public class RoomService : IRoomService
 
         _unitOfWork.RoomRepository.Update(room);
     }
+
+    
 
     public async Task<RoomModel> ResetGameAsync(UserModel user)
     {
