@@ -10,7 +10,7 @@ namespace BLL.Helper
 		private const string ModelMessage = "model is null";
 		private const string EntityMessage = "entity does not exist";
 
-		public static async Task ModelCheck<T>(Guid id, IRepository<T> repository)  where T: BaseEntity 
+		public static async Task ModelCheckAsync<T>(Guid id, IRepository<T> repository)  where T: BaseEntity 
 		{
 			switch (repository)
 			{
@@ -49,7 +49,7 @@ namespace BLL.Helper
 		{
 			if (model is null)
 			{
-				throw new CustomExeption($"{action}: {nameof(model)}");
+				throw new CustomException($"{action}: {nameof(model)}");
 			}
 		}
 	}

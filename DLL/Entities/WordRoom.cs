@@ -9,7 +9,7 @@ public class WordRoom : BaseEntity
 
     public WordColor? Color { get; set; }
 
-    public bool IsGuessed { get; set; }
+    public bool IsUncovered { get; set; }
 
     public Guid WordId { get; set; }
     public Word Word { get; set; }

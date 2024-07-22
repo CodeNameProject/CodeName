@@ -28,7 +28,7 @@ public class WordService : IWordService
 
     public async Task<WordModel> GetByIdAsync(Guid id)
     {
-        await CheckHelper.ModelCheck(id, _unitOfWork.WordRepository);
+        await CheckHelper.ModelCheckAsync(id, _unitOfWork.WordRepository);
 
         var word = await _unitOfWork.WordRepository.GetByIdAsync(id);
         var wordMapped = _mapper.Map<WordModel>(word);
@@ -48,7 +48,7 @@ public class WordService : IWordService
     public async Task UpdateAsync(WordModel model)
     {
         CheckHelper.NullCheck(model);
-        await CheckHelper.ModelCheck(model.Id, _unitOfWork.WordRepository);
+        await CheckHelper.ModelCheckAsync(model.Id, _unitOfWork.WordRepository);
 
         var word = _mapper.Map<Word>(model);
         _unitOfWork.WordRepository.Update(word);
@@ -57,7 +57,7 @@ public class WordService : IWordService
 
     public async Task DeleteAsync(Guid modelId)
     {
-        await CheckHelper.ModelCheck(modelId, _unitOfWork.WordRepository);
+        await CheckHelper.ModelCheckAsync(modelId, _unitOfWork.WordRepository);
 
         await _unitOfWork.WordRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();

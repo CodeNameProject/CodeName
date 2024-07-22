@@ -29,7 +29,7 @@ public class WordRoomService : IWordRoomService
 
     public async Task DeleteAsync(Guid modelId)
     {
-        await CheckHelper.ModelCheck(modelId, _unitOfWork.WordRoomRepository);
+        await CheckHelper.ModelCheckAsync(modelId, _unitOfWork.WordRoomRepository);
 
         await _unitOfWork.WordRoomRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();
@@ -45,7 +45,7 @@ public class WordRoomService : IWordRoomService
 
     public async Task<WordRoomModel> GetByIdAsync(Guid id)
     {
-        await CheckHelper.ModelCheck(id, _unitOfWork.WordRoomRepository);
+        await CheckHelper.ModelCheckAsync(id, _unitOfWork.WordRoomRepository);
 
         var word = await _unitOfWork.WordRoomRepository.GetByIdAsync(id);
         var wordMapped = _mapper.Map<WordRoomModel>(word);
@@ -56,7 +56,7 @@ public class WordRoomService : IWordRoomService
     public async Task UpdateAsync(WordRoomModel model)
     {
         CheckHelper.NullCheck(model);
-        await CheckHelper.ModelCheck(model.Id, _unitOfWork.WordRoomRepository);
+        await CheckHelper.ModelCheckAsync(model.Id, _unitOfWork.WordRoomRepository);
 
         var word = _mapper.Map<WordRoom>(model);
         _unitOfWork.WordRoomRepository.Update(word);

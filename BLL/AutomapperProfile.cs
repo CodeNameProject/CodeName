@@ -33,7 +33,7 @@ public class AutomapperProfile : Profile
 			.ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId))
 			.ForMember(dest => dest.WordName, opt => opt.MapFrom(src => src.Word.WordName))
 			.ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
-			.ForMember(dest => dest.IsGuessed, opt => opt.MapFrom(src => src.IsGuessed))
+			.ForMember(dest => dest.IsGuessed, opt => opt.MapFrom(src => src.IsUncovered))
 			.ReverseMap();
 	}
 }
