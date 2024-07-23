@@ -40,8 +40,9 @@ public class UserRepository : IUserRepository
 
     public async Task DeleteByIdAsync(Guid id)
     {
-        var user = await GetByIdAsync(id);
-        Users.Remove(user);
+		var user = await Users.FindAsync(id);
+
+		Users.Remove(user);
     }
 
     public void Update(User entity)

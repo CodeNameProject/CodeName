@@ -19,7 +19,7 @@ public class AutomapperProfile : Profile
 			.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
 			.ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId))
 			.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-			.ForMember(dest => dest.Team, opt => opt.MapFrom(src => src.Team))
+			.ForMember(dest => dest.TeamColor, opt => opt.MapFrom(src => src.Team))
 			.ForMember(dest => dest.UserRole, opt => opt.MapFrom(src => src.UserRole))
 			.ReverseMap();
 

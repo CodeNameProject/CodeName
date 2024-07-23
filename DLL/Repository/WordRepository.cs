@@ -37,8 +37,9 @@ public class WordRepository : IWordRepository
 
     public async Task DeleteByIdAsync(Guid id)
     {
-        var word = await GetByIdAsync(id);
-        Words.Remove(word);
+		var word = await Words.FindAsync(id);
+
+		Words.Remove(word);
     }
 
     public void Update(Word entity)

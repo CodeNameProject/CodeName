@@ -3,6 +3,7 @@ using BLL.Helper;
 using BLL.Interface;
 using BLL.Models;
 using DLL.Entities;
+using DLL.Enums;
 using DLL.Interface;
 
 namespace BLL.Services;
@@ -17,6 +18,35 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+        //Front should decide if spymaster can change role
+    
+    public async Task SetTeamAndRole(UserModel user, UserRole userRole, TeamColor? teamColor)
+    {
+        if (teamColor is null)
+        {
+            user.UserRole = userRole;
+        }
+        else
+        {
+            user.UserRole = userRole;
+            user.TeamColor = teamColor;
+        }
+
+        var userMapped = _mapper.Map<User>(user);
+        _unitOfWork.UserRepository.Update(userMapped);
+        await _unitOfWork.SaveAsync();
+    }
+    
+    public async Task ChangeUserName(UserModel user, string newName)
+    {
+        user.Name = newName;
+        
+        var userMapped = _mapper.Map<User>(user);
+        
+        _unitOfWork.UserRepository.Update(userMapped);
+        await _unitOfWork.SaveAsync();
+    }
+    
     public async Task<IEnumerable<UserModel>> GetAllAsync()
     {
         var users = await _unitOfWork.UserRepository.GetAllAsync();
