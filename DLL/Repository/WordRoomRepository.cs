@@ -2,11 +2,7 @@
 using DLL.Entities;
 using DLL.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DLL.Repository
 {
@@ -28,7 +24,7 @@ namespace DLL.Repository
 		{
 			var entity = await WordRooms.FirstOrDefaultAsync(x => x.Id == id);
 
-			WordRooms.Remove(entity);
+			WordRooms.Remove(entity!);
 		}
 
 		public async Task<IEnumerable<WordRoom>> GetAllAsync()
@@ -43,7 +39,7 @@ namespace DLL.Repository
 			var entity = await WordRooms.Include(wr => wr.Word)
 										.Include(wr => wr.Room)
 										.FirstOrDefaultAsync(wr => wr.Id == id);
-			return entity;
+			return entity!;
 		}
 
 		public void Update(WordRoom entity)

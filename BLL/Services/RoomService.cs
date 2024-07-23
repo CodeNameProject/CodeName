@@ -66,11 +66,12 @@ public class RoomService : IRoomService
 		//}
 		//return continue();
 	}
+    
+    //GetRoom With Id
+    
+    //AddUser With Name And should back Room
+    public async Task<RoomModel> CreateRoomWithUserAsync(string username)
 
-	//GetRoom With Id
-
-	//AddUser With Name And should back Room
-	public async Task<RoomModel> CreateRoomWithUserAsync(string username)
     {
         var room = new Room();
 
