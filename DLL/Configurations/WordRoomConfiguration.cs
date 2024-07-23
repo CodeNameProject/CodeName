@@ -9,10 +9,9 @@ namespace DLL.Configurations
 	{
 		public void Configure(EntityTypeBuilder<WordRoom> builder)
 		{
-			builder.HasKey(wr => new {wr.WordId, wr.RoomId});
+			builder.HasIndex(wr => new {wr.WordId, wr.RoomId});
 
-			builder.Property(x => x.Id)
-					.ValueGeneratedOnAdd();
+			builder.HasKey(x => x.Id);
 
 			builder.HasOne(wr => wr.Room)
 				.WithMany(r => r.WordRooms)

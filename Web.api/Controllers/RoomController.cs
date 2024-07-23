@@ -31,7 +31,7 @@ namespace CodeNamesAPI.Controllers
             }
         }
         
-        [HttpPost("{username}")]
+        [HttpPost("new/{username}")]
         public async Task<IActionResult> CreateRoomAndUser(string username)
         {
             try

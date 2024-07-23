@@ -94,7 +94,7 @@ namespace DLL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsGuessed")
+                    b.Property<bool>("IsUncovered")
                         .HasColumnType("bit");
 
                     b.HasKey("WordId", "RoomId");
