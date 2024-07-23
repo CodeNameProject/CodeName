@@ -47,7 +47,7 @@ public class RoomService : IRoomService
 		//{
 		//	var roomword = room.wordrooms.firstordefault(x => x.wordid == wordid)!;
 		//	if (roomword != null) roomword.isuncovered = true;
-
+		 
 		//}
 
 		//Suggestion
