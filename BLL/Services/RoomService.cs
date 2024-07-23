@@ -71,7 +71,6 @@ public class RoomService : IRoomService
     
     //AddUser With Name And should back Room
     public async Task<RoomModel> CreateRoomWithUserAsync(string username)
-
     {
         var room = new Room();
 
@@ -95,7 +94,7 @@ public class RoomService : IRoomService
     }
 
     //Returns RoomID
-    public async Task<RoomModel> AddUserToRoom(Guid roomId, string username)
+    public async Task<RoomModel> AddUserToRoomAsync(Guid roomId, string username)
     {
         await CheckHelper.ModelCheckAsync(roomId, _unitOfWork.RoomRepository);
 
@@ -106,6 +105,7 @@ public class RoomService : IRoomService
         };
 
         await _unitOfWork.UserRepository.AddAsync(user);
+		await _unitOfWork.SaveAsync();
 
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
 
@@ -128,21 +128,21 @@ public class RoomService : IRoomService
         }
 
         _unitOfWork.RoomRepository.Update(room);
-    }
+		await _unitOfWork.SaveAsync();
+	}
 
-    public async Task<RoomModel> ResetGameAsync(UserModel user)
+	public async Task<RoomModel> ResetGameAsync(UserModel user)
     {
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(user.RoomId);
 
         room.IsStarted = false;
-        
-        foreach (var wr in room.WordRooms)
+
+		foreach (var wr in room.WordRooms)
         {
             await _unitOfWork.WordRoomRepository.DeleteByIdAsync(wr.Id);
-        }
-
-		_unitOfWork.RoomRepository.Update(room);
-
+			await _unitOfWork.SaveAsync();
+		}
+		 
         await AddWordsToRoomAsync(user.RoomId);
 
         var roomModel = await GetByIdAsync(user.RoomId);

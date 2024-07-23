@@ -5,9 +5,9 @@ namespace BLL.Interface;
 
 public interface IRoomService : ICrud<RoomModel>
 {
-	Task<RoomModel> AddUserToRoom(Guid roomid, string username);
+	Task<RoomModel> AddUserToRoomAsync(Guid roomid, string username);
 	Task<RoomModel> CreateRoomWithUserAsync(string username);
 	Task<RoomModel> ResetGameAsync(UserModel user);
-	Task StartGameAsync(UserModel userId);
+	Task StartGameAsync(UserModel user);
 	Task CheckUserWordAsync(UserModel user, Guid wordId);
 }

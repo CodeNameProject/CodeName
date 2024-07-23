@@ -46,13 +46,12 @@ namespace CodeNamesAPI.Controllers
             }
         }
 
-
         [HttpPost("{roomid:guid}/{username}")]
         public async Task<IActionResult> AddUserToRoom(Guid roomid, string username)
         {
             try
             {
-                var room = await _roomService.AddUserToRoom(roomid, username);
+                var room = await _roomService.AddUserToRoomAsync(roomid, username);
                 return Ok(room);
             }
             catch (CustomException ex)
