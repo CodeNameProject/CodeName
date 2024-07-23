@@ -16,6 +16,20 @@ namespace CodeNamesAPI.Controllers
             _roomService = roomService;
             _userService = userService;
         }
+
+        [HttpGet("roomid/{roomId:guid}")]
+        public async Task<IActionResult> GetRoomById(Guid roomId)
+        {
+            try
+            {
+                var room = await _roomService.GetByIdAsync(roomId);
+                return Ok(room);
+            }
+            catch (CustomException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         
         [HttpPost("{username}")]
         public async Task<IActionResult> CreateRoomAndUser(string username)
