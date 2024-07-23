@@ -1,14 +1,23 @@
 # CodeNamesAPI Documentation
 
 ## Overview
-This project provides a backend API for managing rooms and users in the CodeNames game. The API is built using ASP.NET Core and implements several endpoints for room and user management. It leverages services for business logic (`IRoomService`, `IUserService`) and handles exceptions to provide meaningful responses.
+CodeNamesAPI provides a backend API for managing rooms and users in the CodeNames game. The API is built using ASP.NET Core and implements several endpoints for room and user management. It leverages services for business logic (`IRoomService`, `IUserService`) and handles exceptions to provide meaningful responses.
 
 ## Endpoints
 
 ### RoomController
 
-#### 1. Get Room by ID
-- **Endpoint:** `GET /api/room/roomid/{roomId}`
+#### 1. Remove Room
+- **Endpoint:** `DELETE /api/room/{roomId}`
+- **Description:** Removes a room using its unique identifier.
+- **Parameters:**
+  - `roomId` (Guid): Unique identifier of the room.
+- **Response:** 
+  - `200 OK`: If the room is removed successfully.
+  - `400 Bad Request`: If an error occurs.
+
+#### 2. Get Room by ID
+- **Endpoint:** `GET /api/room/{roomId}`
 - **Description:** Fetches details of a room using its unique identifier.
 - **Parameters:**
   - `roomId` (Guid): Unique identifier of the room.
@@ -16,7 +25,7 @@ This project provides a backend API for managing rooms and users in the CodeName
   - `200 OK`: Room details.
   - `400 Bad Request`: If an error occurs.
 
-#### 2. Create Room and User
+#### 3. Create Room and User
 - **Endpoint:** `POST /api/room/{username}`
 - **Description:** Creates a new room and adds a user to it.
 - **Parameters:**
@@ -25,7 +34,7 @@ This project provides a backend API for managing rooms and users in the CodeName
   - `200 OK`: Details of the created room.
   - `400 Bad Request`: If an error occurs.
 
-#### 3. Add User to Room
+#### 4. Add User to Room
 - **Endpoint:** `POST /api/room/{roomid}/{username}`
 - **Description:** Adds an existing user to a specified room.
 - **Parameters:**
@@ -35,7 +44,7 @@ This project provides a backend API for managing rooms and users in the CodeName
   - `200 OK`: Details of the room after adding the user.
   - `400 Bad Request`: If an error occurs.
 
-#### 4. Start Game
+#### 5. Start Game
 - **Endpoint:** `PATCH /api/room/{userid}`
 - **Description:** Starts the game for a user.
 - **Parameters:**
@@ -44,7 +53,7 @@ This project provides a backend API for managing rooms and users in the CodeName
   - `200 OK`: If the game starts successfully.
   - `400 Bad Request`: If an error occurs.
 
-#### 5. Reset Game
+#### 6. Reset Game
 - **Endpoint:** `PUT /api/room/{userId}`
 - **Description:** Resets the game for a user.
 - **Parameters:**
@@ -55,7 +64,16 @@ This project provides a backend API for managing rooms and users in the CodeName
 
 ### UserController
 
-#### 1. Change User Name
+#### 1. Log Out User
+- **Endpoint:** `DELETE /api/user/{userid}`
+- **Description:** Logs out a user and removes them from the system.
+- **Parameters:**
+  - `userid` (Guid): Unique identifier of the user.
+- **Response:** 
+  - `200 OK`: If the user is removed successfully.
+  - `400 Bad Request`: If an error occurs.
+
+#### 2. Change User Name
 - **Endpoint:** `PATCH /api/user/{userid}/{newName}`
 - **Description:** Changes the username of an existing user.
 - **Parameters:**
@@ -65,7 +83,7 @@ This project provides a backend API for managing rooms and users in the CodeName
   - `200 OK`: If the username is changed successfully.
   - `400 Bad Request`: If an error occurs.
 
-#### 2. Set User Team and Role
+#### 3. Set User Team and Role
 - **Endpoint:** `PATCH /api/user/{userId}`
 - **Description:** Sets the team and role for a user.
 - **Parameters:**
@@ -92,3 +110,6 @@ All endpoints handle exceptions and return appropriate HTTP status codes:
 3. Restore dependencies: `dotnet restore`.
 4. Build the project: `dotnet build`.
 5. Run the project: `dotnet run`.
+
+## Conclusion
+This API provides a robust solution for managing rooms and users in the CodeNames game, with endpoints for creating rooms, adding users, starting and resetting games, and modifying user details. The use of services ensures separation of concerns and clean architecture.
