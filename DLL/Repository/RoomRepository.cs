@@ -28,6 +28,7 @@ public class RoomRepository : IRoomRepository
 	{
 		var room = await Rooms
 			.Include(x => x.WordRooms)
+			.ThenInclude(w => w.Word)
 			.Include(c => c.Users)
 			.FirstOrDefaultAsync(c => c.Id == id);
 

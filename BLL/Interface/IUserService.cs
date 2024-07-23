@@ -6,6 +6,7 @@ namespace BLL.Interface;
 
 public interface IUserService : ICrud<UserModel>
 {
-    Task ChangeUserName(UserModel user,string newName);
-    Task SetTeamAndRole(UserModel user, UserRole userRole, TeamColor? teamColor);
+    Task ChangeUserName(Guid userId,string newName);
+    Task SetTeamAndRole(Guid userId, UserRole userRole, TeamColor? teamColor);
+    Task DeleteAsync(Guid modelId);
 }

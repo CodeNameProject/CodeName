@@ -20,8 +20,10 @@ public class UserService : IUserService
     }
         //Front should decide if spymaster can change role
     
-    public async Task SetTeamAndRole(UserModel user, UserRole userRole, TeamColor? teamColor)
+    public async Task SetTeamAndRole(Guid userId, UserRole userRole, TeamColor? teamColor)
     {
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        
         if (teamColor is null)
         {
             user.UserRole = userRole;
@@ -29,21 +31,19 @@ public class UserService : IUserService
         else
         {
             user.UserRole = userRole;
-            user.TeamColor = teamColor;
+            user.Team = teamColor;
         }
 
-        var userMapped = _mapper.Map<User>(user);
-        _unitOfWork.UserRepository.Update(userMapped);
+        _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveAsync();
     }
     
-    public async Task ChangeUserName(UserModel user, string newName)
+    public async Task ChangeUserName(Guid userId, string newName)
     {
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
         user.Name = newName;
         
-        var userMapped = _mapper.Map<User>(user);
-        
-        _unitOfWork.UserRepository.Update(userMapped);
+        _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveAsync();
     }
     

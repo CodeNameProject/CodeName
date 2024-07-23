@@ -16,13 +16,26 @@ public class UserController : Controller
         _userService = userService;
     }
 
+    [HttpDelete("{userid:guid}")]
+    public async Task<IActionResult> LogOut(Guid userid)
+    {
+        try
+        {
+            await _userService.DeleteAsync(userid);
+            return Ok("Removed successfully..");
+        }
+        catch (CustomException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpPatch("{userid:guid}/{newName}")]
     public async Task<IActionResult> ChangeUserName(Guid userid, string newName)
     {
         try
         {
-            var user = await _userService.GetByIdAsync(userid);
-            await _userService.ChangeUserName(user, newName);
+            await _userService.ChangeUserName(userid, newName);
             return Ok();
         }
         catch (CustomException ex)
@@ -36,8 +49,7 @@ public class UserController : Controller
     {
         try
         {
-            var user = await _userService.GetByIdAsync(userId);
-            await _userService.SetTeamAndRole(user,userRole,teamColor);
+            await _userService.SetTeamAndRole(userId,userRole,teamColor);
             return Ok();
         }
         catch (CustomException ex)
