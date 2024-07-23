@@ -29,42 +29,48 @@ public class RoomService : IRoomService
 
         var roomWord = room.WordRooms.FirstOrDefault(x => x.WordId == wordId)!;
 
-        //if (roomWord != null)
-        //{
-        //    throw new CustomException($"Word with such ID doesnt exist in the room: {wordId}");
-        //}
         CheckHelper.NullCheck(roomWord, $"Word with such ID doesnt exist in the room: {wordId}");
         
         roomWord.IsUncovered = true;
         _unitOfWork.WordRoomRepository.Update(roomWord);
         await _unitOfWork.SaveAsync();
 
+		//	if (roomword != null)
+		//	{
+		//		throw new customexception($"word with such id doesnt exist in the room: {wordid}");
+		//	}
+
 		//var userWords = room.WordRooms.Where(x => (int)x.Color! == (int)user.TeamColor!)
 		//						.Select(x => x.WordId);
-        //if its a bomb = lose
-        //if its a team's card = continue 
-        //if its an opponent's card = end of turn
-        //if (userWords.Contains(wordId))
-        //{
-        //}
 
-        //Suggestion
+		//if (userWords.Contains(wordId))
+		//{
+		//	var roomword = room.wordrooms.firstordefault(x => x.wordid == wordid)!;
+		//	if (roomword != null) roomword.isuncovered = true;
 
-        //if((int)roomWord.Color! != (int)user.TeamColor!)
-        //{
-        //    return endOfTurn();
-        //}
-        //else if (roomWord.Color == WordColor.Black)
-        //{
-        //    return lose();
-        //}
-        //return continue();
-    }
-    
-    //GetRoom With Id
-    
-    //AddUser With Name And should back Room
-    public async Task<RoomModel> CreateRoomWithUserAsync(string username)
+		//}
+
+		//Suggestion
+
+		//if its a bomb = lose
+		//if its a team's card = continue 
+		//if its an opponent's card = end of turn
+
+		//if((int)roomWord.Color! != (int)user.TeamColor!)
+		//{
+		//    return endOfTurn();
+		//}
+		//else if (roomWord.Color == WordColor.Black)
+		//{
+		//    return lose();
+		//}
+		//return continue();
+	}
+
+	//GetRoom With Id
+
+	//AddUser With Name And should back Room
+	public async Task<RoomModel> CreateRoomWithUserAsync(string username)
     {
         var room = new Room();
 
