@@ -38,6 +38,9 @@ public class RoomService : IRoomService
 
             if (roomWord != null) roomWord.IsUncovered = true;
         }
+        
+        
+        
     }
     
     //GetRoom With Id
