@@ -394,4 +394,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+/Web.api/appsettings.json
 
