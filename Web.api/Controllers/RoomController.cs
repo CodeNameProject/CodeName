@@ -23,7 +23,7 @@ namespace CodeNamesAPI.Controllers
             try
             {
                 var user = await _userService.GetByIdAsync(userId);
-                await _roomService.CheckUserWord(user,wordId);
+                await _roomService.CheckUserWordAsync(user,wordId);
                 return Ok();
             }
             catch (CustomException ex)
@@ -90,8 +90,5 @@ namespace CodeNamesAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        
-        
     }
 }

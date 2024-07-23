@@ -22,31 +22,56 @@ public class RoomService : IRoomService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
-    public async Task CheckUserWord(UserModel user, Guid wordId)
+
+    public async Task CheckUserWordAsync(UserModel user, Guid wordId)//Card is uncovered no matter what, we are interested in whether it was guessed or not.
     {
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(user.RoomId);
 
-        if (room.WordRooms is null) throw new CustomException();
-        
-        var userWords = (room.WordRooms.Where(x => (int)x.Color! == (int)user.TeamColor!)).Select(x => x.WordId);
+        var roomWord = room.WordRooms.FirstOrDefault(x => x.WordId == wordId)!;
 
-        var chosenWord = await _unitOfWork.WordRepository.GetByIdAsync(wordId);
+        CheckHelper.NullCheck(roomWord, $"Word with such ID doesnt exist in the room: {wordId}");
+        
+        roomWord.IsUncovered = true;
+        _unitOfWork.WordRoomRepository.Update(roomWord);
+        await _unitOfWork.SaveAsync();
 
-        if (userWords.Contains(chosenWord.Id))
-        {
-            var roomWord = room.WordRooms.FirstOrDefault(x => x.WordId == wordId);
+		//	if (roomword != null)
+		//	{
+		//		throw new customexception($"word with such id doesnt exist in the room: {wordid}");
+		//	}
 
-            if (roomWord != null) roomWord.IsUncovered = true;
-        }
-        
-        
-        
-    }
+		//var userWords = room.WordRooms.Where(x => (int)x.Color! == (int)user.TeamColor!)
+		//						.Select(x => x.WordId);
+
+		//if (userWords.Contains(wordId))
+		//{
+		//	var roomword = room.wordrooms.firstordefault(x => x.wordid == wordid)!;
+		//	if (roomword != null) roomword.isuncovered = true;
+		 
+		//}
+
+		//Suggestion
+
+		//if its a bomb = lose
+		//if its a team's card = continue 
+		//if its an opponent's card = end of turn
+
+		//if((int)roomWord.Color! != (int)user.TeamColor!)
+		//{
+		//    return endOfTurn();
+		//}
+		//else if (roomWord.Color == WordColor.Black)
+		//{
+		//    return lose();
+		//}
+		//return continue();
+	}
     
     //GetRoom With Id
     
     //AddUser With Name And should back Room
     public async Task<RoomModel> CreateRoomWithUserAsync(string username)
+
     {
         var room = new Room();
 
@@ -105,15 +130,11 @@ public class RoomService : IRoomService
         _unitOfWork.RoomRepository.Update(room);
     }
 
-    
-
     public async Task<RoomModel> ResetGameAsync(UserModel user)
     {
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(user.RoomId);
 
         room.IsStarted = false;
-        
-        if (room.WordRooms is null) throw new CustomException("Room Is Null");
         
         foreach (var wr in room.WordRooms)
         {
@@ -203,8 +224,6 @@ public class RoomService : IRoomService
 
 			await _unitOfWork.WordRoomRepository.AddAsync(wordRoom);
 			await _unitOfWork.SaveAsync();
-
-			var wrModel = _mapper.Map<WordRoomModel>(wordRoom);
 		}
 	}
 
