@@ -18,10 +18,10 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+        //Front should decide if spymaster can change role
     
     public async Task SetTeamAndRole(UserModel user, UserRole userRole, TeamColor? teamColor)
     {
-        //Front should decide if spymaster can change role
         if (teamColor is null)
         {
             user.UserRole = userRole;
@@ -90,7 +90,4 @@ public class UserService : IUserService
         await _unitOfWork.UserRepository.DeleteByIdAsync(modelId);
         await _unitOfWork.SaveAsync();
     }
-
-
-   
 }
