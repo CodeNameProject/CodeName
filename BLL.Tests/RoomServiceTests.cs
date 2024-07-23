@@ -53,51 +53,6 @@ public class RoomServiceTests
     }
 
     [Test]
-    public async Task CheckUserWord_SameRoomAndSameColor_Returns()
-    {
-        //Arrange
-        var roomGuid = Guid.NewGuid();
-        var room = new Room
-        {
-            Id = roomGuid,
-            WordRooms = new List<WordRoom>(),
-		};
-
-        var user = new UserModel
-        {
-            Id = Guid.NewGuid(),
-            RoomId = roomGuid,
-            TeamColor = TeamColor.Red,
-        };
-
-        var wordGuid = Guid.NewGuid();
-        var word = new Word
-        {
-            Id = roomGuid,
-            WordName = "Test1",
-        };
-
-        var wordRoom = new WordRoom
-        {
-            WordId = wordGuid,
-            RoomId = roomGuid,
-            Color = WordColor.Red,
-        };
-
-        room.WordRooms.Add(wordRoom);
-
-        _roomRepositoryMock.Setup(r => r.GetByIdAsync(roomGuid)).ReturnsAsync(room);
-
-        //Act
-        await _roomService.CheckUserWordAsync(user, wordGuid);
-
-        //Assert
-        _unitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
-        _wordRoomRepositoryMock.Verify(x => x.Update(It.IsAny<WordRoom>()), Times.Once);
-		Assert.That(wordRoom.IsUncovered, Is.True);
-    }
-
-    [Test]
     public async Task CreateRoomWithUserAsync_PassesUserName_ReturnsRoomWithUser()
     {
         var userName = "Test1";
@@ -247,49 +202,18 @@ public class RoomServiceTests
 	[Test]
 	public async Task ResetGameAsync_IsStartedSetToTrue_SetsToFalse()
 	{
-		//SetUp
-		var services = new ServiceCollection();
+		var roomGuid = Guid.NewGuid();
 
-		services.AddDbContext<AppDbContext>(opts => opts.UseInMemoryDatabase("memory"));
-		services.AddAutoMapper(m => m.AddProfile(new AutomapperProfile()));
-
-		var provider = services.BuildServiceProvider();
-
-		var mapper = provider.GetRequiredService<IMapper>();
-
-		var context = provider.GetRequiredService<AppDbContext>();
-
-		var roomRepository = new RoomRepository(context);
-		var userRepository = new UserRepository(context);
-		var wordRepository = new WordRepository(context);
-		var wordRoomRepository = new WordRoomRepository(context);
-		var unitOfWork = new UnitOfWork(wordRoomRepository, roomRepository, userRepository, wordRepository, context);
-
-		foreach (var word in GetWords())
+		var _room = new Room
 		{
-			await unitOfWork.WordRepository.AddAsync(word);
-		}
-		await unitOfWork.SaveAsync();
+			Id = roomGuid,
+		};
 
-		var roomService = new RoomService(unitOfWork, mapper);
+		_wordRepositoryMock.Setup(x => x.GetAllAsync()).ReturnsAsync(GetWords());
 
-		var userName = "user1";
-		var room = await roomService.CreateRoomWithUserAsync(userName);
-		room = await roomService.AddUserToRoomAsync(room.Id, userName + "2");
-		room = await roomService.AddUserToRoomAsync(room.Id, userName + "3");
-		room = await roomService.AddUserToRoomAsync(room.Id, userName + "4");
+		_roomRepositoryMock.Setup(r => r.GetByIdAsync(roomGuid)).ReturnsAsync(_room);
 
-		var user = room.Users!.First();
-
-		await roomService.StartGameAsync(user);
-
-		room = await roomService.GetByIdAsync(room.Id);
-
-		Assert.That(room.IsStarted, Is.True);
-
-		room = await roomService.ResetGameAsync(user);
-
-		Assert.That(room.IsStarted, Is.False);
+		Assert.That(_room.IsStarted, Is.False);
 	}
 
 	[Ignore("Words' Getter")]

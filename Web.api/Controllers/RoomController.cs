@@ -16,21 +16,6 @@ namespace CodeNamesAPI.Controllers
             _roomService = roomService;
             _userService = userService;
         }
-
-        [HttpGet("Check")]
-        public async Task<IActionResult> CheckOperativeWord([FromQuery]Guid userId,Guid wordId)
-        {
-            try
-            {
-                var user = await _userService.GetByIdAsync(userId);
-                await _roomService.CheckUserWordAsync(user,wordId);
-                return Ok();
-            }
-            catch (CustomException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
         
         [HttpPost("{username}")]
         public async Task<IActionResult> CreateRoomAndUser(string username)

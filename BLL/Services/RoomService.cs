@@ -23,50 +23,6 @@ public class RoomService : IRoomService
         _mapper = mapper;
     }
 
-    public async Task CheckUserWordAsync(UserModel user, Guid wordId)//Card is uncovered no matter what, we are interested in whether it was guessed or not.
-    {
-        var room = await _unitOfWork.RoomRepository.GetByIdAsync(user.RoomId);
-
-        var roomWord = room.WordRooms.FirstOrDefault(x => x.WordId == wordId)!;
-
-        CheckHelper.NullCheck(roomWord, $"Word with such ID doesnt exist in the room: {wordId}");
-        
-        roomWord.IsUncovered = true;
-        _unitOfWork.WordRoomRepository.Update(roomWord);
-        await _unitOfWork.SaveAsync();
-
-		//	if (roomword != null)
-		//	{
-		//		throw new customexception($"word with such id doesnt exist in the room: {wordid}");
-		//	}
-
-		//var userWords = room.WordRooms.Where(x => (int)x.Color! == (int)user.TeamColor!)
-		//						.Select(x => x.WordId);
-
-		//if (userWords.Contains(wordId))
-		//{
-		//	var roomword = room.wordrooms.firstordefault(x => x.wordid == wordid)!;
-		//	if (roomword != null) roomword.isuncovered = true;
-		 
-		//}
-
-		//Suggestion
-
-		//if its a bomb = lose
-		//if its a team's card = continue 
-		//if its an opponent's card = end of turn
-
-		//if((int)roomWord.Color! != (int)user.TeamColor!)
-		//{
-		//    return endOfTurn();
-		//}
-		//else if (roomWord.Color == WordColor.Black)
-		//{
-		//    return lose();
-		//}
-		//return continue();
-	}
-    
     //GetRoom With Id
     
     //AddUser With Name And should back Room
@@ -167,34 +123,6 @@ public class RoomService : IRoomService
         var roomMapped = _mapper.Map<RoomModel>(room);
 
         return roomMapped;
-    }
-
-    public async Task AddAsync(RoomModel model)
-    {
-        CheckHelper.NullCheck(model);
-
-        var room = _mapper.Map<Room>(model);
-        await _unitOfWork.RoomRepository.AddAsync(room);
-        await _unitOfWork.SaveAsync();
-    }
-
-    public async Task UpdateAsync(RoomModel model)
-    {
-        CheckHelper.NullCheck(model);
-
-        await CheckHelper.ModelCheckAsync(model.Id, _unitOfWork.RoomRepository);
-
-        var room = _mapper.Map<Room>(model);
-        _unitOfWork.RoomRepository.Update(room);
-        await _unitOfWork.SaveAsync();
-    }
-
-    public async Task DeleteAsync(Guid modelId)
-    {
-        await CheckHelper.ModelCheckAsync(modelId, _unitOfWork.RoomRepository);
-
-        await _unitOfWork.RoomRepository.DeleteByIdAsync(modelId);
-        await _unitOfWork.SaveAsync();
     }
 	
     private async Task AddWordsToRoomAsync(Guid roomId)

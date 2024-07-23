@@ -9,5 +9,4 @@ public interface IRoomService : ICrud<RoomModel>
 	Task<RoomModel> CreateRoomWithUserAsync(string username);
 	Task<RoomModel> ResetGameAsync(UserModel user);
 	Task StartGameAsync(UserModel user);
-	Task CheckUserWordAsync(UserModel user, Guid wordId);
 }
