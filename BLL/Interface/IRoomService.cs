@@ -10,4 +10,5 @@ public interface IRoomService : ICrud<RoomModel>
 	Task<RoomModel> ResetGameAsync(UserModel user);
 	Task StartGameAsync(UserModel user);
 	Task DeleteByIdAsync(Guid id);
+	void ShuffleRoomModel(RoomModel model);
 }

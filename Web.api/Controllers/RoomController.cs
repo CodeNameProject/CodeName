@@ -37,6 +37,9 @@ namespace CodeNamesAPI.Controllers
             try
             {
                 var room = await _roomService.GetByIdAsync(roomId);
+                
+                _roomService.ShuffleRoomModel(room);
+                
                 return Ok(room);
             }
             catch (CustomException ex)

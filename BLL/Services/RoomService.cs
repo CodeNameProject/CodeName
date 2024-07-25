@@ -39,12 +39,15 @@ public class RoomService : IRoomService
 
         await AddWordsToRoomAsync(room.Id);
 
-        room = await _unitOfWork.RoomRepository.GetByIdAsync(room.Id);
+        room = (await _unitOfWork.RoomRepository.GetByIdAsync(room.Id));
+
+        ShuffleWords(room);
 
         var roomModel = _mapper.Map<RoomModel>(room);
 
         return roomModel;
     }
+
 
     public async Task<RoomModel> AddUserToRoomAsync(Guid roomId, string username)
     {
@@ -60,6 +63,8 @@ public class RoomService : IRoomService
         await _unitOfWork.SaveAsync();
 
         var room = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
+
+        ShuffleWords(room);
 
         var roomModel = _mapper.Map<RoomModel>(room);
 
@@ -112,12 +117,17 @@ public class RoomService : IRoomService
 
         var roomModel = await GetByIdAsync(user.RoomId);
 
+        if (roomModel.WordRooms is null) throw new CustomException("Words are empty.");
+
+        ShuffleRoomModel(roomModel);
+
         return roomModel;
     }
 
     public async Task<IEnumerable<RoomModel>> GetAllAsync()
     {
         var rooms = await _unitOfWork.RoomRepository.GetAllAsync();
+
         var roomsMapped = _mapper.Map<IEnumerable<RoomModel>>(rooms);
 
         return roomsMapped;
@@ -248,5 +258,20 @@ public class RoomService : IRoomService
         words = wordRange.Values.ToList();
 
         return words;
+    }
+
+    private void ShuffleWords(Room model)
+    {
+        var shuffledRoomWords = model.WordRooms.OrderBy(w => w.WordId).ToList();
+
+        model.WordRooms = shuffledRoomWords;
+    }
+
+    public void ShuffleRoomModel(RoomModel model)
+    {
+        if (model.WordRooms is null) throw new CustomException();
+        var shuffledRoomWords = model.WordRooms.OrderBy(w => w.WordId).ToList();
+
+        model.WordRooms = shuffledRoomWords;
     }
 }
