@@ -88,6 +88,22 @@ public class RoomService : IRoomService
         await _unitOfWork.SaveAsync();
     }
 
+    public async Task<int> CheckUserNumberInRoom(Guid userId)
+    {
+        var users = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        var room = await _unitOfWork.RoomRepository.GetByIdAsync(users.RoomId);
+
+        var userCount = room.Users.Count;
+        return userCount;
+    }
+
+    public async Task DeleteRoomByUserId(Guid userId)
+    {
+        var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+        await _unitOfWork.RoomRepository.DeleteByIdAsync(user.RoomId);
+        await _unitOfWork.SaveAsync();
+    }
+
     public async Task DeleteByIdAsync(Guid id)
     {
         await CheckHelper.ModelCheckAsync(id, _unitOfWork.RoomRepository);

@@ -10,10 +10,12 @@ namespace CodeNamesAPI.Controllers;
 public class UserController : Controller
 {
     private readonly IUserService _userService;
+    private readonly IRoomService _roomService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IRoomService roomService)
     {
         _userService = userService;
+        _roomService = roomService;
     }
 
     [HttpDelete("{userid:guid}")]
@@ -21,7 +23,17 @@ public class UserController : Controller
     {
         try
         {
-            await _userService.DeleteAsync(userid);
+            var userCount = await _roomService.CheckUserNumberInRoom(userid);
+
+            if (userCount <= 1)
+            {
+                await _roomService.DeleteRoomByUserId(userid);
+            }
+            else
+            {
+                await _userService.DeleteAsync(userid);
+            }
+
             return Ok("Removed successfully..");
         }
         catch (CustomException ex)
@@ -45,11 +57,12 @@ public class UserController : Controller
     }
 
     [HttpPatch("{userId:guid}")]
-    public async Task<IActionResult> SetUserTeamAndRole(Guid userId,[FromQuery]UserRole userRole,TeamColor? teamColor)
+    public async Task<IActionResult> SetUserTeamAndRole(Guid userId, [FromQuery] UserRole userRole,
+        TeamColor? teamColor)
     {
         try
         {
-            await _userService.SetTeamAndRole(userId,userRole,teamColor);
+            await _userService.SetTeamAndRole(userId, userRole, teamColor);
             return Ok();
         }
         catch (CustomException ex)
