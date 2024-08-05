@@ -22,6 +22,7 @@ namespace DLL.Configurations
 			builder.HasOne(wr => wr.Word)
 				.WithMany(w => w.WordRooms)
 				.HasForeignKey(r => r.WordId)
+				.OnDelete(DeleteBehavior.Restrict)
 				.IsRequired();
 		}
 	}
