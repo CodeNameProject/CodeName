@@ -1,9 +1,9 @@
 using BLL;
 using BLL.Interface;
 using BLL.Services;
-using DLL.Data;
-using DLL.Interface;
-using DLL.Repository;
+using DAL.Data;
+using DAL.Interface;
+using DAL.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodeNamesAPI

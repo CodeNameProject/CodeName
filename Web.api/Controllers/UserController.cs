@@ -1,6 +1,6 @@
 ﻿using BLL.Interface;
 using BLL.Validation;
-using DLL.Enums;
+using DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeNamesAPI.Controllers;

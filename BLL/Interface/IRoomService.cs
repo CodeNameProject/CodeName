@@ -1,5 +1,5 @@
 ﻿using BLL.Models;
-using DLL.Entities;
+using DAL.Entities;
 
 namespace BLL.Interface;
 

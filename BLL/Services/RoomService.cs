@@ -3,9 +3,9 @@ using BLL.Helper;
 using BLL.Interface;
 using BLL.Models;
 using BLL.Validation;
-using DLL.Entities;
-using DLL.Enums;
-using DLL.Interface;
+using DAL.Entities;
+using DAL.Enums;
+using DAL.Interface;
 
 namespace BLL.Services;
 

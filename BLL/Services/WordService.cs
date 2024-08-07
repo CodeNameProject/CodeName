@@ -2,8 +2,8 @@
 using BLL.Helper;
 using BLL.Interface;
 using BLL.Models;
-using DLL.Entities;
-using DLL.Interface;
+using DAL.Entities;
+using DAL.Interface;
 
 namespace BLL.Services;
 

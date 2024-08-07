@@ -2,9 +2,9 @@
 using BLL.Helper;
 using BLL.Interface;
 using BLL.Models;
-using DLL.Entities;
-using DLL.Enums;
-using DLL.Interface;
+using DAL.Entities;
+using DAL.Enums;
+using DAL.Interface;
 
 namespace BLL.Services;
 
@@ -18,7 +18,6 @@ public class UserService : IUserService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
-        //Front should decide if spymaster can change role
     
     public async Task SetTeamAndRole(Guid userId, UserRole userRole, TeamColor? teamColor)
     {

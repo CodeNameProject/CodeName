@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using BLL.Models;
 using BLL.Services;
-using DLL.Entities;
-using DLL.Enums;
-using DLL.Interface;
+using DAL.Entities;
+using DAL.Enums;
+using DAL.Interface;
 using Moq;
 using NUnit.Framework;
 
