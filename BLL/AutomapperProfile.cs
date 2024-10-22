@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Models;
-using DLL.Entities;
+using DAL.Entities;
 
 namespace BLL;
 
@@ -37,3 +37,6 @@ public class AutomapperProfile : Profile
 			.ReverseMap();
 	}
 }
+
+
+

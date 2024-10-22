@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using BLL.Models;
 using BLL.Services;
-using DLL.Entities;
-using DLL.Enums;
-using DLL.Interface;
+using DAL.Entities;
+using DAL.Enums;
+using DAL.Interface;
 using Moq;
 using NUnit.Framework;
 
@@ -33,9 +33,8 @@ public class UserServiceTest
         var service = new UserService(unitOfWorkMock.Object, mapperMock.Object);
 
         var newRole = UserRole.Spymaster;
-
         //Act
-         await service.SetTeamAndRole(user,UserRole.Spymaster,null);
+         await service.SetTeamAndRole(user.Id,UserRole.Spymaster,null);
 
         //Assert
         Assert.That(user.UserRole, Is.EqualTo(newRole));
@@ -68,7 +67,7 @@ public class UserServiceTest
         const UserRole role = UserRole.Spymaster;
         
         //Act
-        await service.SetTeamAndRole(user, UserRole.Spymaster, TeamColor.Red);
+        await service.SetTeamAndRole(user.Id, UserRole.Spymaster, TeamColor.Red);
 
         //Assert
         Assert.That(user.UserRole,Is.EqualTo(role));
@@ -99,7 +98,7 @@ public class UserServiceTest
 
         const string name = "luka";
         //Act
-        await service.ChangeUserName(user, name);
+        await service.ChangeUserName(user.Id, name);
 
         //Assert
         Assert.That(user.Name,Is.EqualTo(name));

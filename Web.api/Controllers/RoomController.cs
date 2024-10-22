@@ -17,12 +17,29 @@ namespace CodeNamesAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("roomid/{roomId:guid}")]
+        [HttpDelete("{roomId:guid}")]
+        public async Task<IActionResult> RemoveRoom(Guid roomId)
+        {
+            try
+            {
+                await _roomService.DeleteByIdAsync(roomId);
+                return Ok("Room removed successfully..");
+            }
+            catch (CustomException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpGet("{roomId:guid}")]
         public async Task<IActionResult> GetRoomById(Guid roomId)
         {
             try
             {
                 var room = await _roomService.GetByIdAsync(roomId);
+                
+                _roomService.ShuffleRoomModel(room);
+                
                 return Ok(room);
             }
             catch (CustomException ex)

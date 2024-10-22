@@ -1,4 +1,4 @@
-﻿using DLL.Entities;
+﻿using DAL.Entities;
 
 namespace BLL.Models;
 

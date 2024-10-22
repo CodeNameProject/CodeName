@@ -1,5 +1,5 @@
-﻿using DLL.Entities;
-using DLL.Enums;
+﻿using DAL.Entities;
+using DAL.Enums;
 
 namespace BLL.Models;
 

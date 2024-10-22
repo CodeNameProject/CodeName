@@ -1,5 +1,5 @@
 ﻿using BLL.Models;
-using DLL.Entities;
+using DAL.Entities;
 
 namespace BLL.Interface;
 
@@ -9,4 +9,8 @@ public interface IRoomService : ICrud<RoomModel>
 	Task<RoomModel> CreateRoomWithUserAsync(string username);
 	Task<RoomModel> ResetGameAsync(UserModel user);
 	Task StartGameAsync(UserModel user);
+	Task DeleteByIdAsync(Guid id);
+	void ShuffleRoomModel(RoomModel model);
+	Task DeleteRoomByUserId(Guid userId);
+	Task<int> CheckUserNumberInRoom(Guid userId);
 }

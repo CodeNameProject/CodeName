@@ -1,6 +1,6 @@
 ﻿using BLL.Validation;
-using DLL.Entities;
-using DLL.Interface;
+using DAL.Entities;
+using DAL.Interface;
 
 
 namespace BLL.Helper

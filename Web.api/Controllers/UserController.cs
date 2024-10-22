@@ -1,6 +1,6 @@
 ﻿using BLL.Interface;
 using BLL.Validation;
-using DLL.Enums;
+using DAL.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeNamesAPI.Controllers;
@@ -10,10 +10,36 @@ namespace CodeNamesAPI.Controllers;
 public class UserController : Controller
 {
     private readonly IUserService _userService;
+    private readonly IRoomService _roomService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IRoomService roomService)
     {
         _userService = userService;
+        _roomService = roomService;
+    }
+
+    [HttpDelete("{userid:guid}")]
+    public async Task<IActionResult> LogOut(Guid userid)
+    {
+        try
+        {
+            var userCount = await _roomService.CheckUserNumberInRoom(userid);
+
+            if (userCount <= 1)
+            {
+                await _roomService.DeleteRoomByUserId(userid);
+            }
+            else
+            {
+                await _userService.DeleteAsync(userid);
+            }
+
+            return Ok("Removed successfully..");
+        }
+        catch (CustomException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPatch("{userid:guid}/{newName}")]
@@ -21,8 +47,7 @@ public class UserController : Controller
     {
         try
         {
-            var user = await _userService.GetByIdAsync(userid);
-            await _userService.ChangeUserName(user, newName);
+            await _userService.ChangeUserName(userid, newName);
             return Ok();
         }
         catch (CustomException ex)
@@ -32,12 +57,12 @@ public class UserController : Controller
     }
 
     [HttpPatch("{userId:guid}")]
-    public async Task<IActionResult> SetUserTeamAndRole(Guid userId,[FromQuery]UserRole userRole,TeamColor? teamColor)
+    public async Task<IActionResult> SetUserTeamAndRole(Guid userId, [FromQuery] UserRole userRole,
+        TeamColor? teamColor)
     {
         try
         {
-            var user = await _userService.GetByIdAsync(userId);
-            await _userService.SetTeamAndRole(user,userRole,teamColor);
+            await _userService.SetTeamAndRole(userId, userRole, teamColor);
             return Ok();
         }
         catch (CustomException ex)
